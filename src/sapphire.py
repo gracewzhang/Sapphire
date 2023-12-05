@@ -52,6 +52,5 @@ class Sapphire():
             model="gpt-3.5-turbo", messages=self.msgs 
         ) 
         reply = chat.choices[0].message.content 
-        print(f'ChatGPT: {reply}') 
         self.msgs.append({'role': 'assistant', 'content': reply}) 
         return reply 
