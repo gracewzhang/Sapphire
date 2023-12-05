@@ -1,8 +1,9 @@
 from openai import OpenAI
-from cli import console
+from cli import console, Color
 import os
 import sys
 import subprocess
+from rich.prompt import Confirm
 
 
 class Sapphire():
@@ -17,7 +18,7 @@ class Sapphire():
         api_key = os.getenv('OPENAI_API_KEY')
         if api_key is None:
             console.print(
-                'Make sure to add your OpenAI API KEY to your system environment as OPENAI_API_KEY.')
+                f'{Color.ERROR.value}:pushpin: Make sure to add your OpenAI API KEY to your system environment as OPENAI_API_KEY. :pushpin:')
             sys.exit(0)
         self.client = OpenAI(api_key=api_key)
 
@@ -30,24 +31,24 @@ class Sapphire():
         elif platform .startswith('win32'):
             self.system = 'Windows'
         else:
-            console.print('User platform is incompatible with Sapphire :(')
+            console.print(
+                f'{Color.ERROR.value}User platform is incompatible with Sapphire :(')
             sys.exit(0)
 
     def execute_cmd(self, user_cmd) -> None:
         sapphire_cmd = self.__get_sapphire_cmd(user_cmd)
         if sapphire_cmd.startswith('Invalid command'):
-            console.print('Please enter a valid command.')
+            console.print(f'{Color.ERROR.value}Please enter a valid command.')
         elif self.__greenlight_sapphire_cmd(sapphire_cmd):
             subprocess.call(sapphire_cmd, shell=True)
         else:
-            console.print('=== Aborting ===')
+            console.print(
+                f'{Color.ERROR.value}:stop_sign: Aborting :stop_sign:')
 
     def __greenlight_sapphire_cmd(self, sapphire_cmd) -> bool:
-        console.print(f'Executing {sapphire_cmd}... [Y/N]')
-        res = input()
-        if res == 'Y' or res == 'y':
-            return True
-        return False
+        greenlit = Confirm.ask(
+            f':dango: Execute {Color.COMMAND.value}{sapphire_cmd}')
+        return greenlit
 
     def __get_sapphire_cmd(self, user_cmd) -> str:
         cmd = f'What is the script in a {self.system} environment to execute the following command:' \
