@@ -1,11 +1,14 @@
 from cli import CLI
+from sapphire import Sapphire
 
 
 def main():
+    sapphire = Sapphire()
     cli = CLI()
-    while True:
-        res = cli.get_user_input()
 
+    while True:
+        cmd = cli.get_user_input()
+        sapphire.execute_cmd(cmd)
 
 if __name__ == '__main__':
     main()
