@@ -32,7 +32,9 @@ class Sapphire():
 
     def execute_cmd(self, user_cmd) -> None:
         sapphire_cmd = self.__get_sapphire_cmd(user_cmd)
-        if self.__greenlight_sapphire_cmd(sapphire_cmd):
+        if sapphire_cmd == 'Invalid command':
+            print('Please enter a valid command.')
+        elif self.__greenlight_sapphire_cmd(sapphire_cmd):
             subprocess.call(sapphire_cmd, shell=True)
         else:
             print('=== Aborting ===')
@@ -46,7 +48,9 @@ class Sapphire():
 
     def __get_sapphire_cmd(self, user_cmd) -> str:
         cmd = f'What is the script in a {self.system} environment to execute the following command:' \
-            + f'"{user_cmd}". Reply with just the command and no additional text.'
+            + f'"{user_cmd}". Reply with just the command and no additional text.' \
+            + f'If it is not possible to answer with a command line command, reply with' \
+            + f'"Invalid command"'
         self.msgs.append({'role': 'user', 'content': cmd})
         chat = self.client.chat.completions.create( 
             model="gpt-3.5-turbo", messages=self.msgs 
