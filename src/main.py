@@ -8,6 +8,10 @@ def main():
 
     while True:
         cmd = cli.get_user_input()
+        # cmd is a special command
+        if cmd is None:
+            continue
+        
         sapphire.execute_cmd(cmd)
 
 if __name__ == '__main__':
