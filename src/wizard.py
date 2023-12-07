@@ -13,21 +13,21 @@ class Wizard():
                       user execute command line commands to manage their desktop'}]
 
     def execute_cmd(self, user_cmd) -> None:
-        sapphire_cmd = self.__get_sapphire_cmd(user_cmd)
-        if sapphire_cmd.startswith('Invalid command'):
+        wizard_cmd = self.__get_wizard_cmd(user_cmd)
+        if wizard_cmd.startswith('Invalid command'):
             console.print(f'{Color.ERROR.value}Please enter a valid command.')
-        elif self.__greenlight_sapphire_cmd(sapphire_cmd):
-            subprocess.call(sapphire_cmd, shell=True)
+        elif self.__greenlight_wizard_cmd(wizard_cmd):
+            subprocess.call(wizard_cmd, shell=True)
         else:
             console.print(
                 f'{Color.ERROR.value}:stop_sign: Aborting :stop_sign:')
 
-    def __greenlight_sapphire_cmd(self, sapphire_cmd) -> bool:
+    def __greenlight_wizard_cmd(self, wizard_cmd) -> bool:
         greenlit = Confirm.ask(
-            f':dango: Execute {Color.COMMAND.value}{sapphire_cmd}')
+            f':dango: Execute {Color.COMMAND.value}{wizard_cmd}')
         return greenlit
 
-    def __get_sapphire_cmd(self, user_cmd) -> str:
+    def __get_wizard_cmd(self, user_cmd) -> str:
         cmd = f'What is the script in a {self.system} environment to execute the following command:' \
             + f'"{user_cmd}". Reply with just the command and no additional text.' \
             + 'If it is not possible to answer with a command line command, reply with' \

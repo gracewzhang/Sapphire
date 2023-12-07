@@ -1,5 +1,6 @@
 from openai import OpenAI
 from cli import CLI, console, Color
+from witch import Witch
 from wizard import Wizard
 import os
 import sys
@@ -7,10 +8,12 @@ import sys
 
 class Sapphire():
     def __init__(self) -> None:
+        self.cli = CLI()
         client = self.__setup_connection()
         system = self.__detect_system()
-        self.cli = CLI()
         self.wizard = Wizard(client, system)
+        self.witch = Witch(client)
+        self.speaking_to_wizard = True
 
         self.start()
 
@@ -20,7 +23,10 @@ class Sapphire():
             # cmd is a special command
             if cmd is None:
                 continue
-            self.wizard.execute_cmd(cmd)
+            if self.speaking_to_wizard:
+                self.wizard.execute_cmd(cmd)
+            else:
+                self.witch.answer_question(cmd)
 
     def __setup_connection(self) -> OpenAI:
         api_key = os.getenv('OPENAI_API_KEY')
