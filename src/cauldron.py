@@ -1,15 +1,17 @@
-import chromadb
 from langchain.document_loaders import DirectoryLoader
 from langchain.vectorstores.chroma import Chroma
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
+import datetime
+import os
+import shutil
 
 
 class Cauldron():
     def __init__(self, directory: str) -> None:
         self.directory = directory
-        print(f'DIRECTORY: {self.directory}')
         self.persist_directory = './.sapphire'
+        self.embedding_function = OpenAIEmbeddings()
         self.__setup_client()
 
     def reingest(self) -> None:
@@ -32,22 +34,33 @@ class Cauldron():
         """
         return True if cache doesn't exist or last updated != today
         """
-        return True
+        try:
+            with open (f'{self.persist_directory}/date.txt', 'r') as f:
+                cached_date = f.readline().strip()
+                return cached_date != f'{datetime.date.today()}'
+        except IOError:
+            return True
 
     def __get_existing_client(self):
-        client = chromadb.PersistentClient(self.persist_directory)
+        client = Chroma(persist_directory=self.persist_directory, embedding_function=
+                        self.embedding_function)
         return client
 
     def __get_new_client(self):
-        embeddings = OpenAIEmbeddings()
+        if os.path.exists(self.persist_directory):
+            shutil.rmtree(self.persist_directory)
+
         docs = self.__get_docs()
         client = Chroma.from_documents(
-            docs, embeddings, persist_directory=self.persist_directory)
+            docs, self.embedding_function, persist_directory=self.persist_directory)
+
+        with open (f'{self.persist_directory}/date.txt', 'w') as f:
+            f.write(f'{datetime.date.today()}')
         return client
 
     def __get_docs(self, chunk_size=1000, chunk_overlap=20) -> list:
         # TODO: add print statements for progress
-        loader = DirectoryLoader(self.directory)
+        loader = DirectoryLoader(self.directory, glob="**/*.md", show_progress=True)
         documents = loader.load()
         text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=chunk_size, chunk_overlap=chunk_overlap)

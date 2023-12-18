@@ -15,7 +15,7 @@ class Wizard():
     def execute_cmd(self, user_cmd) -> None:
         wizard_cmd = self.__get_wizard_cmd(user_cmd)
         if wizard_cmd.startswith('Invalid command'):
-            console.print(f'{Color.ERROR.value}Please enter a valid command, or press {Color.MENU.value}h;[/] to view the help menu.')
+            console.print(f'{Color.ERROR.value}Please enter a valid command.')
         elif self.__greenlight_wizard_cmd(wizard_cmd):
             subprocess.call(wizard_cmd, shell=True)
         else:
