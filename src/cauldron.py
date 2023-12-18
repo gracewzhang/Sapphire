@@ -8,11 +8,15 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 class Cauldron():
     def __init__(self, directory: str) -> None:
         self.directory = directory
-        self.persist_directory = '/.sapphire'
+        print(f'DIRECTORY: {self.directory}')
+        self.persist_directory = './.sapphire'
         self.__setup_client()
 
     def reingest(self) -> None:
         self.db = self.__get_new_client()
+
+    def get_db(self):
+        return self.db
 
     def __setup_client(self) -> None:
         """
@@ -28,7 +32,7 @@ class Cauldron():
         """
         return True if cache doesn't exist or last updated != today
         """
-        pass
+        return True
 
     def __get_existing_client(self):
         client = chromadb.PersistentClient(self.persist_directory)
@@ -42,6 +46,7 @@ class Cauldron():
         return client
 
     def __get_docs(self, chunk_size=1000, chunk_overlap=20) -> list:
+        # TODO: add print statements for progress
         loader = DirectoryLoader(self.directory)
         documents = loader.load()
         text_splitter = RecursiveCharacterTextSplitter(

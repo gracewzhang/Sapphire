@@ -1,17 +1,25 @@
-from openai import OpenAI
 from cauldron import Cauldron
-from langchain.chat_models import ChatOpenAI
-from langchain.chains.question_answering import load_qa_chain
+from langchain.llms import OpenAI
+from langchain.chains import ConversationalRetrievalChain
+from langchain.memory import ConversationBufferMemory
 
 
 class Witch():
-    def __init__(self, client: OpenAI, model_name="gpt-3.5-turbo") -> None:
+    def __init__(self, client, directory: str, model_name="gpt-3.5-turbo") -> None:
         self.client = client
-        self.cauldron = Cauldron()
-        self.llm = ChatOpenAI(model_name=model_name)
+        self.cauldron = Cauldron(directory)
+        self.__build_chain()
+
+    def __build_chain(self) -> None:
+        llm = OpenAI(temperature=0)
+        memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+        cauldron = self.cauldron.get_db()
+        retriever = cauldron.as_retriever(lambda_val=0.025, k=5, filter=None)
+        self.qa = ConversationalRetrievalChain.from_llm(llm, retriever, memory=memory)
 
     def answer_question(self, question: str) -> None:
-        pass
+        res = self.qa({'question': question})
+        print(res['answer'])
 
     def reingest(self) -> None:
         self.cauldron.reingest()

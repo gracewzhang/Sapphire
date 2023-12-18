@@ -8,12 +8,14 @@ import sys
 
 class Sapphire():
     def __init__(self) -> None:
-        self.cli = CLI()
         client = self.__setup_connection()
         system = self.__detect_system()
+        directory = os.getcwd()
         self.wizard = Wizard(client, system)
-        self.witch = Witch(client)
+        self.witch = Witch(client, directory)
+
         self.speaking_to_wizard = True
+        self.cli = CLI(self.speaking_to_wizard)
 
         self.start()
 
@@ -23,7 +25,11 @@ class Sapphire():
             # cmd is a special command
             if cmd is None:
                 continue
-            if self.speaking_to_wizard:
+            # switching btwn wizard & witch
+            if cmd == 0:
+                # TODO: figure out a way to avoid storing 2 speaking_to_wizard booleans
+                self.speaking_to_wizard = not self.speaking_to_wizard
+            elif self.speaking_to_wizard:
                 self.wizard.execute_cmd(cmd)
             else:
                 self.witch.answer_question(cmd)
