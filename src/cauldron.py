@@ -5,6 +5,8 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 import datetime
 import os
 import shutil
+import stat
+from cli import console, Color
 
 
 class Cauldron():
@@ -21,10 +23,6 @@ class Cauldron():
         return self.db
 
     def __setup_client(self) -> None:
-        """
-        if last updated != today or user asked to reingest, call __setup_new_client()
-        else: use existing client
-        """
         if self.__should_reingest():
             self.db = self.__get_new_client()
         else:
@@ -35,7 +33,7 @@ class Cauldron():
         return True if cache doesn't exist or last updated != today
         """
         try:
-            with open (f'{self.persist_directory}/date.txt', 'r') as f:
+            with open(f'{self.persist_directory}/date.txt', 'r') as f:
                 cached_date = f.readline().strip()
                 return cached_date != f'{datetime.date.today()}'
         except IOError:
@@ -54,15 +52,16 @@ class Cauldron():
         client = Chroma.from_documents(
             docs, self.embedding_function, persist_directory=self.persist_directory)
 
-        with open (f'{self.persist_directory}/date.txt', 'w') as f:
+        with open(f'{self.persist_directory}/date.txt', 'w') as f:
             f.write(f'{datetime.date.today()}')
         return client
 
     def __get_docs(self, chunk_size=1000, chunk_overlap=20) -> list:
-        # TODO: add print statements for progress
+        console.print(f'{Color.SYSTEM.value}:leaves: Gathering ingredients :leaves:')
         loader = DirectoryLoader(self.directory, glob="**/*.md", show_progress=True)
         documents = loader.load()
         text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=chunk_size, chunk_overlap=chunk_overlap)
+        console.print(f'{Color.SYSTEM.value}:cocktail: Brewing cauldron :cocktail:')
         docs = text_splitter.split_documents(documents)
         return docs

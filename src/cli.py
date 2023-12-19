@@ -19,24 +19,24 @@ class CLI():
         self.speaking_to_wizard = speaking_to_wizard
         self.special_cmds = {
             'h;': self.__print_help_msg,
-            'e;': self.__exit_sapphire,
+            'q;': self.__quit_sapphire,
             'w;': self.__switch_speaker,
+            'r;': self.__trigger_reingest,
         }
         self.__print_start_msg()
 
     def __print_start_msg(self) -> None:
         start_msg = ':sparkles: Welcome! Type in your desired command, and press enter when you\'re done :sparkles:'
-        options = f'{Color.MENU.value}h;[/] - help menu\n' \
-            + f'{Color.MENU.value}w;[/] - switch to {self.__get_speaker(True)}\n' \
-            + f'{Color.MENU.value}e;[/] - exit'
         console.print(f'{Color.SYSTEM.value}{start_msg}')
-        console.print(options)
+        self.__print_help_msg()
         return None
 
-    # TODO: write help message
     def __print_help_msg(self) -> None:
-        help_msg = '[insert help msg]'
-        console.print(help_msg)
+        options = f'{Color.MENU.value}h;[/] - help menu (what you\'re seeing right now)\n' \
+            + f'{Color.MENU.value}w;[/] - switch to {self.__get_speaker(True)}\n' \
+            + f'{Color.MENU.value}r;[/] - update witch (aka reingest data)\n' \
+            + f'{Color.MENU.value}q;[/] - quit'
+        console.print(options)
         return None
 
     def __switch_speaker(self) -> None:
@@ -51,11 +51,15 @@ class CLI():
             return ':owl: Wizard :owl:'
         return ':crystal_ball: Witch :crystal_ball:'
 
+    def __trigger_reingest(self) -> None:
+        return 1
+
     def get_user_input(self) -> str:
-        cmd = Prompt.ask(f'{Color.PROMPT.value}Command')
+        speaker_emoji = ':owl:' if self.speaking_to_wizard else ':crystal_ball:'
+        cmd = Prompt.ask(f'{Color.PROMPT.value}{speaker_emoji} Command')
         if cmd in self.special_cmds:
             return self.special_cmds[cmd]()
         return cmd
 
-    def __exit_sapphire(self) -> None:
+    def __quit_sapphire(self) -> None:
         sys.exit(0)
