@@ -1,9 +1,15 @@
 from openai import OpenAI
-from cli import CLI, console, Color
+from cli import CLI, console, Color, CLIResponse
 from witch import Witch
 from wizard import Wizard
 import os
 import sys
+from enum import Enum
+
+
+class Agent(Enum):
+    WIZARD = 0
+    WITCH = 1
 
 
 class Sapphire():
@@ -12,10 +18,11 @@ class Sapphire():
         system = self.__detect_system()
         directory = os.getcwd()
         self.speaking_to_wizard = True
+        self.history = []
 
         self.cli = CLI(self.speaking_to_wizard)
-        self.wizard = Wizard(client, system)
-        self.witch = Witch(client, directory)
+        self.wizard = Wizard(client, system, self.history, Agent.WIZARD)
+        self.witch = Witch(client, directory, self.history, Agent.WITCH)
 
         self.start()
 
@@ -23,14 +30,13 @@ class Sapphire():
         while True:
             cmd = self.cli.get_user_input()
             # cmd is a special command
-            if cmd is None:
+            if cmd == CLIResponse.IGNORE:
                 continue
-            # switching btwn wizard & witch
-            if cmd == 0:
+            if cmd == CLIResponse.SWITCH:
                 # TODO: figure out a way to avoid storing 2 speaking_to_wizard booleans
                 self.speaking_to_wizard = not self.speaking_to_wizard
             # reingest documents
-            elif cmd == 1:
+            elif cmd == CLIResponse.REINGEST:
                 self.witch.reingest()
             elif self.speaking_to_wizard:
                 self.wizard.execute_cmd(cmd)

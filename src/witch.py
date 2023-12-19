@@ -6,9 +6,11 @@ from cli import console
 
 
 class Witch():
-    def __init__(self, client, directory: str, model_name="gpt-3.5-turbo") -> None:
+    def __init__(self, client, directory: str, history: list, agent, model_name="gpt-3.5-turbo") -> None:
         self.client = client
         self.cauldron = Cauldron(directory)
+        self.history = history
+        self.agent = agent
         self.__build_qa()
 
     def __build_qa(self) -> None:
@@ -20,7 +22,9 @@ class Witch():
 
     def answer_question(self, question: str) -> None:
         res = self.qa({'question': question})
-        console.print(res['answer'])
+        answer = res['answer']
+        console.print(answer)
+        self.history.append((self.agent, question, answer))
 
     def reingest(self) -> None:
         self.cauldron.reingest()
