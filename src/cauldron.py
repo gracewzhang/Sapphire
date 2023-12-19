@@ -29,7 +29,7 @@ class Cauldron():
 
     def __should_reingest(self) -> bool:
         """
-        return True if cache doesn't exist or last updated != today
+        Reingest if cache doesn't exist or last updated != today
         """
         try:
             with open(f'{self.persist_directory}/date.txt', 'r') as f:
