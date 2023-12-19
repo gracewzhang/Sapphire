@@ -3,18 +3,21 @@ from utils import CommandStatus
 from cli import console, Color
 import subprocess
 from rich.prompt import Confirm
+from utils import Agent
 
 
 class Wizard():
-    def __init__(self, client: OpenAI, system: str, history: dict, agent) -> None:
+    def __init__(self, client: OpenAI, system: str, history: dict, get_model) -> None:
         self.client = client
         self.system = system
-        self.agent = agent
-        history[self.agent] = []
-        self.history = history[self.agent]
+        self.get_model = get_model
+
+        agent = Agent.WIZARD
+        history[agent] = []
+        self.history = history[agent]
         self.msgs = [{'role': 'system', 'content':
-                      'You are an intelligent assistant named Sapphire that helps the \
-                      user execute command line commands to manage their desktop'}]
+                      'You are an intelligent assistant named Sapphire that helps \
+                      the user execute command line commands to manage their desktop'}]
 
     def execute_cmd(self, user_cmd) -> None:
         wizard_cmd = self.__get_wizard_cmd(user_cmd)
@@ -38,13 +41,13 @@ class Wizard():
         return greenlit
 
     def __get_wizard_cmd(self, user_cmd) -> str:
-        cmd = f'What is the script in a {self.system} environment to execute the following command:' \
-            + f'"{user_cmd}". Reply with just the command and no additional text.' \
-            + 'If it is not possible to answer with a command line command, reply with' \
-            + '"Invalid command"'
+        cmd = f'What is the script in a {self.system} environment to execute the ' \
+            + f'following command: "{user_cmd}". Reply with just the command and ' \
+            + 'no additional text. If it is not possible to answer with a command ' \
+            + 'line command, reply with "Invalid command"'
         self.msgs.append({'role': 'user', 'content': cmd})
         chat = self.client.chat.completions.create(
-            model="gpt-3.5-turbo", messages=self.msgs
+            model=self.get_model().value, messages=self.msgs
         )
         reply = chat.choices[0].message.content
         self.msgs.append({'role': 'assistant', 'content': reply})

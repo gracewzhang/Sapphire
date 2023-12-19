@@ -1,5 +1,5 @@
 from openai import OpenAI
-from utils import Agent
+from utils import Agent, Model
 from cli import CLI, console, Color, CLIResponse
 from witch import Witch
 from wizard import Wizard
@@ -14,16 +14,18 @@ class Sapphire():
         directory = os.getcwd()
         self.active_agent = Agent.WIZARD
         self.history = {}
+        self.model = Model.THREE_FIVE_TURBO
 
-        self.cli = CLI(self.history, self.get_agent, self.set_agent)
-        self.wizard = Wizard(client, system, self.history, Agent.WIZARD)
-        self.witch = Witch(client, directory, self.history, Agent.WITCH)
+        self.cli = CLI(self.history, self.get_agent, self.set_agent, self.get_model,
+                       self.set_model)
+        self.wizard = Wizard(client, system, self.history, self.get_model)
+        self.witch = Witch(client, directory, self.history)
 
         self.start()
 
     def start(self) -> None:
         while True:
-            cmd = self.cli.get_user_input()
+            cmd = self.cli.get_user_input(self.active_agent)
             # cmd is a special command
             if cmd == CLIResponse.IGNORE:
                 continue
@@ -38,7 +40,9 @@ class Sapphire():
     def __setup_connection(self) -> OpenAI:
         api_key = os.getenv('OPENAI_API_KEY')
         if api_key is None:
-            console.print(f'{Color.ERROR.value}:pushpin: Make sure to add your OpenAI API KEY to your system environment as OPENAI_API_KEY. :pushpin:')
+            error_msg = 'pushpin: Make sure to add your OpenAI API KEY to your ' \
+                        'system environment as OPENAI_API_KEY. :pushpin:'
+            console.print(f'{Color.ERROR.value}:{error_msg}')
             sys.exit(0)
         return OpenAI(api_key=api_key)
 
@@ -60,3 +64,9 @@ class Sapphire():
 
     def set_agent(self, agent: Agent) -> None:
         self.active_agent = agent
+
+    def get_model(self) -> Model:
+        return self.model
+
+    def set_model(self, model: Model) -> None:
+        self.model = model
