@@ -1,5 +1,6 @@
 from openai import OpenAI
-from cli import CLI, console, Color
+from utils import Agent
+from cli import CLI, console, Color, CLIResponse
 from witch import Witch
 from wizard import Wizard
 import os
@@ -11,11 +12,12 @@ class Sapphire():
         client = self.__setup_connection()
         system = self.__detect_system()
         directory = os.getcwd()
-        self.speaking_to_wizard = True
+        self.active_agent = Agent.WIZARD
+        self.history = {}
 
-        self.cli = CLI(self.speaking_to_wizard)
-        self.wizard = Wizard(client, system)
-        self.witch = Witch(client, directory)
+        self.cli = CLI(self.history, self.get_agent, self.set_agent)
+        self.wizard = Wizard(client, system, self.history, Agent.WIZARD)
+        self.witch = Witch(client, directory, self.history, Agent.WITCH)
 
         self.start()
 
@@ -23,18 +25,14 @@ class Sapphire():
         while True:
             cmd = self.cli.get_user_input()
             # cmd is a special command
-            if cmd is None:
+            if cmd == CLIResponse.IGNORE:
                 continue
-            # switching btwn wizard & witch
-            if cmd == 0:
-                # TODO: figure out a way to avoid storing 2 speaking_to_wizard booleans
-                self.speaking_to_wizard = not self.speaking_to_wizard
             # reingest documents
-            elif cmd == 1:
+            elif cmd == CLIResponse.REINGEST:
                 self.witch.reingest()
-            elif self.speaking_to_wizard:
+            elif self.active_agent == Agent.WIZARD:
                 self.wizard.execute_cmd(cmd)
-            else:
+            elif self.active_agent == Agent.WITCH:
                 self.witch.answer_question(cmd)
 
     def __setup_connection(self) -> OpenAI:
@@ -56,3 +54,9 @@ class Sapphire():
             console.print(
                 f'{Color.ERROR.value}User platform is incompatible with Sapphire :(')
             sys.exit(0)
+
+    def get_agent(self) -> Agent:
+        return self.active_agent
+
+    def set_agent(self, agent: Agent) -> None:
+        self.active_agent = agent
