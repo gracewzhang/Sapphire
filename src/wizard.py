@@ -1,14 +1,8 @@
 from openai import OpenAI
+from utils import CommandStatus
 from cli import console, Color
 import subprocess
 from rich.prompt import Confirm
-from enum import Enum
-
-
-class CommandStatus(Enum):
-    EXECUTED = 0
-    ABORTED = 1
-    INVALID = 2
 
 
 class Wizard():
@@ -28,14 +22,14 @@ class Wizard():
                     + f'press[/] {Color.MENU.value}help;[/] {Color.ERROR.value}to ' \
                     + 'view the help menu.'
             console.print(error_msg)
-            self.history.append((self.agent, user_cmd, CommandStatus.INVALID))
+            self.history.append((self.agent, user_cmd, wizard_cmd, CommandStatus.INVALID))
         elif self.__greenlight_wizard_cmd(wizard_cmd):
             subprocess.call(wizard_cmd, shell=True)
-            self.history.append((self.agent, user_cmd, CommandStatus.EXECUTED))
+            self.history.append((self.agent, user_cmd, wizard_cmd, CommandStatus.EXECUTED))
         else:
             console.print(
                 f'{Color.ERROR.value}:stop_sign: Aborting :stop_sign:')
-            self.history.append((self.agent, user_cmd, CommandStatus.ABORTED))
+            self.history.append((self.agent, user_cmd, wizard_cmd, CommandStatus.ABORTED))
 
     def __greenlight_wizard_cmd(self, wizard_cmd) -> bool:
         greenlit = Confirm.ask(
