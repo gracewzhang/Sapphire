@@ -34,7 +34,9 @@ class Witch():
             + 'AI:'
         prompt = PromptTemplate(input_variables=["context", "question"], template=template)
         self.qa = ConversationalRetrievalChain.from_llm(llm, retriever,
-                                                        memory=self.memory, combine_docs_chain_kwargs={'prompt': prompt})
+                                                        memory=self.memory,
+                                                        combine_docs_chain_kwargs=
+                                                            {'prompt': prompt})
 
     def answer_question(self, question: str) -> None:
         res = self.qa({'question': question})

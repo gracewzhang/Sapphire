@@ -46,6 +46,7 @@ class Wizard():
             + 'no additional text. If it is not possible to answer with a command ' \
             + 'line command, reply with "Invalid command"'
         self.msgs.append({'role': 'user', 'content': cmd})
+        console.print(f'{Color.SYSTEM.value}:light_bulb: The wizard is thinking :light_bulb:')
         chat = self.client.chat.completions.create(
             model=self.get_model().value, messages=self.msgs
         )
