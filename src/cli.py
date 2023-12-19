@@ -21,8 +21,7 @@ class CLIResponse(Enum):
 
 
 class CLI():
-    def __init__(self, active_agent, history: list, get_agent, set_agent) -> None:
-        self.active_agent = active_agent
+    def __init__(self, history: {}, get_agent, set_agent) -> None:
         self.history = history
         self.get_agent = get_agent
         self.set_agent = set_agent
@@ -58,22 +57,24 @@ class CLI():
         return CLIResponse.IGNORE
 
     def __view_history(self) -> None:
-        prev_agent = self.get_agent()
-        self.set_agent(Agent.TIME_MACHINE)
-
+        history = self.history[self.get_agent()]
         time_machine_msg = ':hourglass_not_done: Time Machine :hourglass_not_done:\n' \
+            + f'Viewing chat history with the {self.get_agent().value}\n' \
             + f'Press {Color.MENU.value}enter[/] to view an earlier ' \
             + f'exchange or {Color.MENU.value}q;[/] to exit the time machine'
         console.print(time_machine_msg)
 
-        idx = len(self.history) - 1
+        agent = self.get_agent()
+        self.set_agent(Agent.TIME_MACHINE)
+
+        idx = len(history) - 1
         while idx >= 0:
-            record = self.history[idx]
-            agent, user_req = record[0], record[1]
+            record = history[idx]
+            user_req = record[0]
             console.print(f'{Color.PROMPT.value}User: {user_req}')
 
             if agent == Agent.WIZARD:
-                wizard_cmd, cmd_status = record[2], record[3]
+                wizard_cmd, cmd_status = record[1], record[2]
                 if cmd_status == CommandStatus.EXECUTED:
                     console.print(f'{agent.value}: Executed {Color.COMMAND.value}{wizard_cmd}')
                 elif cmd_status == CommandStatus.ABORTED:
@@ -81,17 +82,17 @@ class CLI():
                 elif cmd_status == CommandStatus.INVALID:
                     console.print(f'{agent.value}: Invalid request')
             elif agent == Agent.WITCH:
-                witch_ans = record[2]
+                witch_ans = record[1]
                 console.print(f'{agent.value}: {witch_ans}')
 
             idx -= 1
             response = self.get_user_input()
             if response == 'q;':
-                self.set_agent(prev_agent)
+                self.set_agent(agent)
                 return CLIResponse.IGNORE
 
-        console.print(':hourglass_done: Reached the beginning of time :hourglass_done:')
-        self.set_agent(prev_agent)
+        console.print(f':hourglass_done: Reached the beginning of time with {agent.value}:hourglass_done:')
+        self.set_agent(agent)
         return CLIResponse.IGNORE
 
     def __trigger_reingest(self) -> None:

@@ -6,11 +6,12 @@ from rich.prompt import Confirm
 
 
 class Wizard():
-    def __init__(self, client: OpenAI, system: str, history: list, agent) -> None:
+    def __init__(self, client: OpenAI, system: str, history: dict, agent) -> None:
         self.client = client
         self.system = system
-        self.history = history
         self.agent = agent
+        history[self.agent] = []
+        self.history = history[self.agent]
         self.msgs = [{'role': 'system', 'content':
                       'You are an intelligent assistant named Sapphire that helps the \
                       user execute command line commands to manage their desktop'}]
@@ -22,14 +23,14 @@ class Wizard():
                     + f'press[/] {Color.MENU.value}help;[/] {Color.ERROR.value}to ' \
                     + 'view the help menu.'
             console.print(error_msg)
-            self.history.append((self.agent, user_cmd, wizard_cmd, CommandStatus.INVALID))
+            self.history.append((user_cmd, wizard_cmd, CommandStatus.INVALID))
         elif self.__greenlight_wizard_cmd(wizard_cmd):
             subprocess.call(wizard_cmd, shell=True)
-            self.history.append((self.agent, user_cmd, wizard_cmd, CommandStatus.EXECUTED))
+            self.history.append((user_cmd, wizard_cmd, CommandStatus.EXECUTED))
         else:
             console.print(
                 f'{Color.ERROR.value}:stop_sign: Aborting :stop_sign:')
-            self.history.append((self.agent, user_cmd, wizard_cmd, CommandStatus.ABORTED))
+            self.history.append((user_cmd, wizard_cmd, CommandStatus.ABORTED))
 
     def __greenlight_wizard_cmd(self, wizard_cmd) -> bool:
         greenlit = Confirm.ask(

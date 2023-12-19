@@ -1,5 +1,5 @@
 from openai import OpenAI
-from utils import Agent, get_next_agent
+from utils import Agent
 from cli import CLI, console, Color, CLIResponse
 from witch import Witch
 from wizard import Wizard
@@ -13,9 +13,9 @@ class Sapphire():
         system = self.__detect_system()
         directory = os.getcwd()
         self.active_agent = Agent.WIZARD
-        self.history = []
+        self.history = {}
 
-        self.cli = CLI(self.active_agent, self.history, self.get_agent, self.set_agent)
+        self.cli = CLI(self.history, self.get_agent, self.set_agent)
         self.wizard = Wizard(client, system, self.history, Agent.WIZARD)
         self.witch = Witch(client, directory, self.history, Agent.WITCH)
 
@@ -32,7 +32,7 @@ class Sapphire():
                 self.witch.reingest()
             elif self.active_agent == Agent.WIZARD:
                 self.wizard.execute_cmd(cmd)
-            else:
+            elif self.active_agent == Agent.WITCH:
                 self.witch.answer_question(cmd)
 
     def __setup_connection(self) -> OpenAI:
