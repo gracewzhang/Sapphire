@@ -40,8 +40,7 @@ class Sapphire():
     def __setup_connection(self) -> OpenAI:
         api_key = os.getenv('OPENAI_API_KEY')
         if api_key is None:
-            console.print(
-                f'{Color.ERROR.value}:pushpin: Make sure to add your OpenAI API KEY to your system environment as OPENAI_API_KEY. :pushpin:')
+            console.print(f'{Color.ERROR.value}:pushpin: Make sure to add your OpenAI API KEY to your system environment as OPENAI_API_KEY. :pushpin:')
             sys.exit(0)
         return OpenAI(api_key=api_key)
 

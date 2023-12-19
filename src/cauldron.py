@@ -5,7 +5,6 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 import datetime
 import os
 import shutil
-import stat
 from cli import console, Color
 
 
