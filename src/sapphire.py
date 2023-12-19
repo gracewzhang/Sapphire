@@ -1,5 +1,5 @@
 from openai import OpenAI
-from utils import Agent
+from utils import Agent, get_next_agent
 from cli import CLI, console, Color, CLIResponse
 from witch import Witch
 from wizard import Wizard
@@ -15,7 +15,7 @@ class Sapphire():
         self.active_agent = Agent.WIZARD
         self.history = []
 
-        self.cli = CLI(self.active_agent, self.history)
+        self.cli = CLI(self.active_agent, self.history, self.get_agent, self.set_agent)
         self.wizard = Wizard(client, system, self.history, Agent.WIZARD)
         self.witch = Witch(client, directory, self.history, Agent.WITCH)
 
@@ -27,10 +27,6 @@ class Sapphire():
             # cmd is a special command
             if cmd == CLIResponse.IGNORE:
                 continue
-            if cmd == CLIResponse.SWITCH:
-                # TODO: figure out a way to avoid storing 2 speaking_to_wizard booleans
-                self.active_agent = Agent.WITCH if self.active_agent == Agent.WIZARD \
-                    else Agent.WIZARD
             # reingest documents
             elif cmd == CLIResponse.REINGEST:
                 self.witch.reingest()
@@ -58,3 +54,9 @@ class Sapphire():
             console.print(
                 f'{Color.ERROR.value}User platform is incompatible with Sapphire :(')
             sys.exit(0)
+
+    def get_agent(self) -> Agent:
+        return self.active_agent
+
+    def set_agent(self, agent: Agent) -> None:
+        self.active_agent = agent
