@@ -27,14 +27,14 @@ class Witch():
             + 'not know the answer to the question, it truthfully says that it ' \
             + 'does not know.\n' \
             + 'History of conversation:\n' \
-            + '{history}\n' \
+            + '{context}\n' \
             + '\n' \
             + 'Conversation:\n' \
-            + 'Human: {input}\n' \
+            + 'Human: {question}\n' \
             + 'AI:'
-        prompt = PromptTemplate(input_variables=["history", "input"], template=template)
+        prompt = PromptTemplate(input_variables=["context", "question"], template=template)
         self.qa = ConversationalRetrievalChain.from_llm(llm, retriever,
-            memory=self.memory, condense_question_prompt=prompt)
+                                                        memory=self.memory, combine_docs_chain_kwargs={'prompt': prompt})
 
     def answer_question(self, question: str) -> None:
         res = self.qa({'question': question})
