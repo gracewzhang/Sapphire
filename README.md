@@ -8,7 +8,8 @@
 </p>
 
 <div align="center">
-[![license](https://img.shields.io/github/license/dec0dOS/amazing-github-template.svg?style=flat-square)](LICENSE)
+    <br />
+    [![license](https://img.shields.io/github/license/dec0dOS/amazing-github-template.svg?style=flat-square)](LICENSE)
 </div>
 
 ## Features
@@ -42,7 +43,7 @@ TODO: insert demo
 4. `cd` into the cloned repo and run `pip install -r requirements.txt`
 
 ## Roadmap
-[] Fix manual data reingestion—see [open issue T_T](https://github.com/langchain-ai/langchain/issues/14872)
-[] Ingest images
-[] Improve console styling
-[] Support Latex
+- [ ] Fix manual data reingestion—see [open issue T_T](https://github.com/langchain-ai/langchain/issues/14872)
+- [ ] Ingest images
+- [ ] Improve console styling
+- [ ] Support Latex
