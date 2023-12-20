@@ -7,12 +7,14 @@
   <a href="#roadmap">Roadmap</a> •
 </p>
 
+<div align="center">
 [![license](https://img.shields.io/github/license/dec0dOS/amazing-github-template.svg?style=flat-square)](LICENSE)
+</div>
 
 ## Features
 The app contains two agents: the 🦉 Wizard 🦉 and the 🔮 Witch 🔮. It's mainly for personal use with [Obsidian](https://obsidian.md) for classes...
 
-🦉 Wizard 🦉
+### 🦉 Wizard 🦉
 TODO: insert demo
 
 - Request an action to be done to your current directory. The wizard will execute the corrseponding command for you.
@@ -21,7 +23,7 @@ TODO: insert demo
   - Replace all instances of "witch" in ./sorcery with "wizard".
   - etc.
 
-🔮 Witch 🔮
+### 🔮 Witch 🔮
 TODO: insert demo
 
 - Ask the witch a question about the contents of the files in your current directory. The witch will intelligently answer your question using the knowledge obtained from your files.
@@ -35,12 +37,12 @@ TODO: insert demo
 ## Usage
 1. Clone the repo
 2. Store your [Open AI key](https://help.openai.com/en/articles/4936850-where-do-i-find-my-api-key) as an environment variable called `OPENAI_API_KEY`
-3. Add an alias for /src/main.py to your `.bashrc` so that you can call Sapphire from any directory
+3. Add an alias for `/src/main.py` to your `.bashrc` so that you can call Sapphire from any directory
   1. For me, this looked like `alias sapphire='python [my_path]/sapphire/src/main.py'`
 4. `cd` into the cloned repo and run `pip install -r requirements.txt`
 
 ## Roadmap
-[ ] Fix manual data reingestion---see [open issue T_T](https://github.com/langchain-ai/langchain/issues/14872)
-[ ] Ingest images
-[ ] Improve console styling
-[ ] Support Latex
+[] Fix manual data reingestion—see [open issue T_T](https://github.com/langchain-ai/langchain/issues/14872)
+[] Ingest images
+[] Improve console styling
+[] Support Latex
