@@ -11,6 +11,7 @@
     <br />
 
     [![license](https://img.shields.io/github/license/dec0dOS/amazing-github-template.svg?style=flat-square)](LICENSE)
+
 </div>
 
 ## Features
