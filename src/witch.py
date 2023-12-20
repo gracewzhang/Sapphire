@@ -3,6 +3,7 @@ from langchain.llms import OpenAI
 from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts.prompt import PromptTemplate
+from rich.panel import Panel
 from cli import console
 from utils import Agent
 
@@ -10,13 +11,16 @@ from utils import Agent
 class Witch():
     def __init__(self, client, directory: str, history: dict) -> None:
         self.client = client
-        self.cauldron = Cauldron(directory)
-        agent = Agent.WITCH
-        history[agent] = []
-        self.history = history[agent]
-        self.__build_qa()
+        self.directory = directory
+        self.cauldron = None # only initialize cauldron after witch is called
+
+        self.agent = Agent.WITCH
+        history[self.agent] = []
+        self.history = history[self.agent]
 
     def __build_qa(self) -> None:
+        self.cauldron = Cauldron(self.directory)
+
         llm = OpenAI(temperature=0)
         self.memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
         cauldron = self.cauldron.get_db()
@@ -39,9 +43,12 @@ class Witch():
                                                             {'prompt': prompt})
 
     def answer_question(self, question: str) -> None:
+        if self.cauldron is None:
+            self.__build_qa()
+
         res = self.qa({'question': question})
         answer = res['answer']
-        console.print(answer)
+        console.print(Panel(answer, title=self.agent.value))
         self.history.append((question, answer))
 
     def reingest(self) -> None:

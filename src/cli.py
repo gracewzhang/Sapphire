@@ -1,18 +1,13 @@
 import sys
+import os
 from rich.console import Console
 from rich.prompt import Prompt
+from rich.panel import Panel
+from rich.align import Align
 from enum import Enum
-from utils import Agent, CommandStatus, get_next_agent, Model
+from utils import Agent, CommandStatus, Model, Color, get_next_agent
 
 console = Console()
-
-
-class Color(Enum):
-    SYSTEM = '[color(217)]'
-    MENU = '[color(222)]'
-    ERROR = '[color(160)]'
-    PROMPT = '[color(153)]'
-    COMMAND = '[black on color(217)]'
 
 
 class CLIResponse(Enum):
@@ -33,12 +28,23 @@ class CLI():
             'w;': self.__switch_agent,
             'h;': self.__view_history,
             'm;': self.__switch_model,
-            'u;': self.__trigger_reingest,
+            'r;': self.__trigger_reingest,
         }
         self.__print_start_msg()
 
     def __print_start_msg(self) -> None:
+        logo = '''
+  ______                   _     _
+ / _____)                 | |   (_)
+( (____  _____ ____  ____ | |__  _  ____ _____
+ \____ \(____ |  _ \|  _ \|  _ \| |/ ___) ___ |
+ _____) ) ___ | |_| | |_| | | | | | |   | ____|
+(______/\_____|  __/|  __/|_| |_|_|_|   |_____)
+              |_|   |_|
+'''
         start_msg = ':sparkles: Welcome! Type in your desired command, and press enter when you\'re done :sparkles:'
+        logo = Align.center(f'{Color.MENU.value}{logo}')
+        console.print(logo)
         console.print(f'{Color.SYSTEM.value}{start_msg}')
         self.__print_help_msg()
         return CLIResponse.IGNORE
@@ -46,54 +52,61 @@ class CLI():
     def __print_help_msg(self) -> None:
         next_agent_str = get_next_agent(self.get_agent()).value
         model = self.get_model().value
-        options = f'{Color.MENU.value}help;[/] - help menu (what you\'re seeing right now)\n' \
-            + f'{Color.MENU.value}w;[/] - switch to {next_agent_str}\n' \
+        options = \
+            f'{Color.MENU.value}help;[/] - help menu (what you\'re seeing right now)\n' \
+            + f'{Color.MENU.value}w;[/] - switch to the {next_agent_str}\n' \
             + f'{Color.MENU.value}h;[/] - view history\n' \
-            + f'{Color.MENU.value}u;[/] - update witch (aka reingest data)\n' \
+            + f'{Color.MENU.value}r;[/] - reingest data\n' \
             + f'{Color.MENU.value}m;[/] - switch OpenAI model (currently using {model})\n' \
             + f'{Color.MENU.value}q;[/] - quit'
-        console.print(options)
+        console.print(Panel(options))
         return CLIResponse.IGNORE
 
     def __switch_agent(self) -> None:
         self.set_agent(get_next_agent(self.get_agent()))
-        agent_msg = f'Now speaking to {self.get_agent().value}'
+        agent_msg = f'Now speaking to the {self.get_agent().value}'
         console.print(f'{Color.SYSTEM.value}{agent_msg}')
         return CLIResponse.IGNORE
 
     def __view_history(self) -> None:
         agent = self.get_agent()
         history = self.history[agent]
-        time_machine_msg = ':hourglass_not_done: Time Machine :hourglass_not_done:\n' \
-            + f'Viewing chat history with the {self.get_agent().value}\n' \
+        time_machine_msg = \
+            f'{Color.SYSTEM.value}Viewing chat history with the[/] {self.get_agent().value}\n' \
             + f'Press {Color.MENU.value}enter[/] to view an earlier ' \
             + f'exchange or {Color.MENU.value}q;[/] to exit the time machine'
+        console.print('─' * os.get_terminal_size().columns)
         console.print(time_machine_msg)
 
         idx = len(history) - 1
         while idx >= 0:
             record = history[idx]
             user_req = record[0]
-            console.print(f'{Color.PROMPT.value}User: {user_req}')
+            exchange = f'{Color.PROMPT.value}User:[/] {user_req}\n'
 
             if agent == Agent.WIZARD:
                 wizard_cmd, cmd_status = record[1], record[2]
                 if cmd_status == CommandStatus.EXECUTED:
-                    console.print(f'{agent.value}: Executed {Color.COMMAND.value}{wizard_cmd}')
+                    exchange += f'Executed {Color.COMMAND.value}{wizard_cmd}'
                 elif cmd_status == CommandStatus.ABORTED:
-                    console.print(f'{agent.value}: Aborted {wizard_cmd}')
+                    exchange += f'Aborted {wizard_cmd}'
                 elif cmd_status == CommandStatus.INVALID:
-                    console.print(f'{agent.value}: Invalid request')
+                    exchange += 'Invalid request'
             elif agent == Agent.WITCH:
                 witch_ans = record[1]
-                console.print(f'{agent.value}: {witch_ans}')
+                exchange += witch_ans
 
-            idx -= 1
+            console.print(Panel(exchange, title=agent.value))
             response = self.get_user_input(Agent.TIME_MACHINE)
             if response == 'q;':
-                return CLIResponse.IGNORE
+                break
+            idx -= 1
 
-        console.print(f':hourglass_done: Reached the beginning of time with {agent.value}:hourglass_done:')
+        if idx < 0:
+            console.print(
+                f'{Color.SYSTEM.value}Reached the beginning of time with the {agent.value}')
+
+        console.print('─' * os.get_terminal_size().columns)
         return CLIResponse.IGNORE
 
     def __trigger_reingest(self) -> None:
@@ -113,7 +126,7 @@ class CLI():
 
     def get_user_input(self, agent: Agent) -> str:
         if agent == Agent.TIME_MACHINE:
-            cmd = Prompt.ask()
+            cmd = input()
         elif agent == Agent.MODEL_SWITCHER:
             choices = [x.value for x in Model]
             cmd = Prompt.ask('Select your model of choice', choices=choices)

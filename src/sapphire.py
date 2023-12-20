@@ -1,6 +1,6 @@
 from openai import OpenAI
-from utils import Agent, Model
-from cli import CLI, console, Color, CLIResponse
+from utils import Agent, Model, Color
+from cli import CLI, console, CLIResponse
 from witch import Witch
 from wizard import Wizard
 import os
