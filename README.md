@@ -4,11 +4,12 @@
 <p align="center">
   <a href="#features">Features</a> •
   <a href="#usage">Usage</a> •
-  <a href="#roadmap">Roadmap</a> •
+  <a href="#roadmap">Roadmap</a>
 </p>
 
 <div align="center">
     <br />
+
     [![license](https://img.shields.io/github/license/dec0dOS/amazing-github-template.svg?style=flat-square)](LICENSE)
 </div>
 
