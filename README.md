@@ -38,7 +38,7 @@ The app contains two agents: the Wizard and the Witch. It's mainly for personal 
 - Ask the witch a question about the contents of the files in your current directory. The witch will intelligently answer your question using the knowledge obtained from your files.
 - The Chroma vector store is cached locally and configured to be recalculated if it's a new day.
 - Note: as of now, only markdown features are supported.
-- Examples of questions (given the directory contains notes about [computational photography](https://courses.engr.illinois.edu/cs445/fa2023/)):
+- Examples of questions (given that the directory contains notes about [computational photography](https://courses.engr.illinois.edu/cs445/fa2023/)):
   - What did the professor say are the tradeoffs between Lagrangian vs Eulerian motion magnification in videos?
   - How does Laplacian pyramid blending work?
   - Which of the following properties apply to affine transformations? [...]
