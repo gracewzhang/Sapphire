@@ -15,20 +15,26 @@
 </div>
 
 ## Features
-The app contains two agents: the 🦉 Wizard 🦉 and the 🔮 Witch 🔮. It's mainly for personal use with [Obsidian](https://obsidian.md) for classes...
+The app contains two agents: the Wizard and the Witch. It's mainly for personal use with [Obsidian](https://obsidian.md) for college...
 
-#### 🦉 Wizard 🦉
-TODO: insert demo
+### 🦉 Wizard 🦉
+<div align='center'>
+<img src='https://github.com/gracewzhang/Sapphire/assets/32557716/f50e5e1e-a43b-4c77-bafa-ffb25f0a7afa' width='800'/>
+</div>
 
-- Request an action to be done to your current directory. The wizard will execute the corrseponding command for you.
+#### Abilities
+- Request an action to be done to your current directory. The wizard will execute the corresponding command for you.
 - Examples of requests: 
   - List the files that were created after September 22, 2022.
   - Replace all instances of "witch" in ./sorcery with "wizard".
   - etc.
 
-#### 🔮 Witch 🔮
-TODO: insert demo
+### 🔮 Witch 🔮
+<div align='center'>
+  <img src='https://github.com/gracewzhang/Sapphire/assets/32557716/8aff5e85-e97b-42fa-b9b9-a1c02199ca29' width='800'/>
+</div>
 
+#### Abilities
 - Ask the witch a question about the contents of the files in your current directory. The witch will intelligently answer your question using the knowledge obtained from your files.
 - The Chroma vector store is cached locally and configured to be recalculated if it's a new day.
 - Note: as of now, only markdown features are supported.
@@ -48,5 +54,4 @@ TODO: insert demo
 ## Roadmap
 - [ ] Fix manual data reingestion—see [open issue T_T](https://github.com/langchain-ai/langchain/issues/14872)
 - [ ] Ingest images
-- [ ] Improve console styling
 - [ ] Support Latex
