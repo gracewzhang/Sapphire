@@ -1,6 +1,6 @@
 <h1 align="center">Sapphire</h1>
 
-<p align="center"> An assistant for managing and talking to your directories. </p>
+<p align="center"> An assistant for managing and talking to your files. </p>
 <p align="center">
   <a href="#features">Features</a> •
   <a href="#usage">Usage</a> •
@@ -8,16 +8,16 @@
 </p>
 
 <div align="center">
-    <br />
+<br />
 
-    [![license](https://img.shields.io/github/license/dec0dOS/amazing-github-template.svg?style=flat-square)](LICENSE)
+[![license](https://img.shields.io/github/license/dec0dOS/amazing-github-template.svg?style=flat-square)](LICENSE)
 
 </div>
 
 ## Features
 The app contains two agents: the 🦉 Wizard 🦉 and the 🔮 Witch 🔮. It's mainly for personal use with [Obsidian](https://obsidian.md) for classes...
 
-### 🦉 Wizard 🦉
+#### 🦉 Wizard 🦉
 TODO: insert demo
 
 - Request an action to be done to your current directory. The wizard will execute the corrseponding command for you.
@@ -26,7 +26,7 @@ TODO: insert demo
   - Replace all instances of "witch" in ./sorcery with "wizard".
   - etc.
 
-### 🔮 Witch 🔮
+#### 🔮 Witch 🔮
 TODO: insert demo
 
 - Ask the witch a question about the contents of the files in your current directory. The witch will intelligently answer your question using the knowledge obtained from your files.
