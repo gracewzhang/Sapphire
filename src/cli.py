@@ -64,7 +64,7 @@ class CLI():
 
     def __switch_agent(self) -> None:
         self.set_agent(get_next_agent(self.get_agent()))
-        agent_msg = f'Now speaking to {self.get_agent().value}'
+        agent_msg = f'Now speaking to the {self.get_agent().value}'
         console.print(f'{Color.SYSTEM.value}{agent_msg}')
         return CLIResponse.IGNORE
 
