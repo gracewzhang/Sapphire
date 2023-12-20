@@ -10,13 +10,16 @@ from utils import Agent
 class Witch():
     def __init__(self, client, directory: str, history: dict) -> None:
         self.client = client
-        self.cauldron = Cauldron(directory)
+        self.directory = directory
+        self.cauldron = None # only initialize cauldron after witch is called
+
         agent = Agent.WITCH
         history[agent] = []
         self.history = history[agent]
-        self.__build_qa()
 
     def __build_qa(self) -> None:
+        self.cauldron = Cauldron(self.directory)
+
         llm = OpenAI(temperature=0)
         self.memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
         cauldron = self.cauldron.get_db()
@@ -39,6 +42,9 @@ class Witch():
                                                             {'prompt': prompt})
 
     def answer_question(self, question: str) -> None:
+        if self.cauldron is None:
+            self.__build_qa()
+
         res = self.qa({'question': question})
         answer = res['answer']
         console.print(answer)
