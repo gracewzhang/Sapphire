@@ -7,9 +7,19 @@ class Model(Enum):
     FOUR_TURBO = 'gpt-4-turbo'
 
 
+class Color(Enum):
+    SYSTEM = '[color(217)]'
+    MENU = '[color(222)]'
+    ERROR = '[color(160)]'
+    PROMPT = '[color(153)]'
+    COMMAND = '[black on color(217)]'
+    WIZARD = '[color(36)]'
+    WITCH = '[color(134)]'
+
+
 class Agent(Enum):
-    WIZARD = ':owl: Wizard :owl:'
-    WITCH = ':crystal_ball: Witch :crystal_ball:'
+    WIZARD = f'{Color.WIZARD.value}:owl: Wizard :owl:[/]'
+    WITCH = f'{Color.WITCH.value}:crystal_ball: Witch :crystal_ball:[/]'
     TIME_MACHINE = ':hourglass: Time Machine :hourglass:'
     MODEL_SWITCHER = 'Model Switcher'
 
