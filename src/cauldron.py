@@ -1,14 +1,16 @@
-from langchain.document_loaders import DirectoryLoader
-from langchain.vectorstores.chroma import Chroma
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.embeddings.openai import OpenAIEmbeddings
 import datetime
 import os
 import shutil
-from cli import console, Color
+
+from langchain.document_loaders import DirectoryLoader
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.vectorstores.chroma import Chroma
+
+from cli import Color, console
 
 
-class Cauldron():
+class Cauldron:
     def __init__(self, directory: str) -> None:
         self.directory = directory
         self.persist_directory = './.sapphire'
@@ -39,8 +41,10 @@ class Cauldron():
             return True
 
     def __get_existing_client(self):
-        client = Chroma(persist_directory=self.persist_directory, embedding_function=
-                        self.embedding_function)
+        client = Chroma(
+            persist_directory=self.persist_directory,
+            embedding_function=self.embedding_function,
+        )
         return client
 
     def __get_new_client(self):
@@ -49,7 +53,8 @@ class Cauldron():
 
         docs = self.__get_docs()
         client = Chroma.from_documents(
-            docs, self.embedding_function, persist_directory=self.persist_directory)
+            docs, self.embedding_function, persist_directory=self.persist_directory
+        )
 
         with open(f'{self.persist_directory}/date.txt', 'w') as f:
             f.write(f'{datetime.date.today()}')
@@ -57,10 +62,11 @@ class Cauldron():
 
     def __get_docs(self, chunk_size=1000, chunk_overlap=20) -> list:
         console.print(f'{Color.SYSTEM.value}:leaves: Gathering ingredients :leaves:')
-        loader = DirectoryLoader(self.directory, glob="**/*.md", show_progress=True)
+        loader = DirectoryLoader(self.directory, glob='**/*.md', show_progress=True)
         documents = loader.load()
         text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=chunk_size, chunk_overlap=chunk_overlap)
+            chunk_size=chunk_size, chunk_overlap=chunk_overlap
+        )
         console.print(f'{Color.SYSTEM.value}:cocktail: Brewing cauldron :cocktail:')
         docs = text_splitter.split_documents(documents)
         return docs
