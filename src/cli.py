@@ -1,11 +1,13 @@
-import sys
 import os
-from rich.console import Console
-from rich.prompt import Prompt
-from rich.panel import Panel
-from rich.align import Align
+import sys
 from enum import Enum
-from utils import Agent, CommandStatus, Model, Color, get_next_agent
+
+from rich.align import Align
+from rich.console import Console
+from rich.panel import Panel
+from rich.prompt import Prompt
+
+from utils import Agent, Color, CommandStatus, Model, get_next_agent
 
 console = Console()
 
@@ -15,7 +17,7 @@ class CLIResponse(Enum):
     REINGEST = 1
 
 
-class CLI():
+class CLI:
     def __init__(self, history: {}, get_agent, set_agent, get_model, set_model) -> None:
         self.history = history
         self.get_agent = get_agent
@@ -33,7 +35,7 @@ class CLI():
         self.__print_start_msg()
 
     def __print_start_msg(self) -> None:
-        logo = '''
+        logo = """
   ______                   _     _
  / _____)                 | |   (_)
 ( (____  _____ ____  ____ | |__  _  ____ _____
@@ -41,8 +43,11 @@ class CLI():
  _____) ) ___ | |_| | |_| | | | | | |   | ____|
 (______/\_____|  __/|  __/|_| |_|_|_|   |_____)
               |_|   |_|
-'''
-        start_msg = ':sparkles: Welcome! Type in your desired command, and press enter when you\'re done :sparkles:'
+"""
+        start_msg = (
+            ':sparkles: Welcome! Type in your desired command, and press'
+            "enter when you're done :sparkles:"
+        )
         logo = Align.center(f'{Color.MENU.value}{logo}')
         console.print(logo)
         console.print(f'{Color.SYSTEM.value}{start_msg}')
@@ -52,13 +57,15 @@ class CLI():
     def __print_help_msg(self) -> None:
         next_agent_str = get_next_agent(self.get_agent()).value
         model = self.get_model().value
-        options = \
-            f'{Color.MENU.value}help;[/] - help menu (what you\'re seeing right now)\n' \
-            + f'{Color.MENU.value}w;[/] - switch to the {next_agent_str}\n' \
-            + f'{Color.MENU.value}h;[/] - view history\n' \
-            + f'{Color.MENU.value}r;[/] - reingest data\n' \
-            + f'{Color.MENU.value}m;[/] - switch OpenAI model (currently using {model})\n' \
+        options = (
+            f"{Color.MENU.value}help;[/] - help menu (what you're seeing right now)\n"
+            + f'{Color.MENU.value}w;[/] - switch to the {next_agent_str}\n'
+            + f'{Color.MENU.value}h;[/] - view history\n'
+            + f'{Color.MENU.value}r;[/] - reingest data\n'
+            + f'{Color.MENU.value}m;[/] - switch OpenAI model (currently using '
+            + f'{model})\n'
             + f'{Color.MENU.value}q;[/] - quit'
+        )
         console.print(Panel(options))
         return CLIResponse.IGNORE
 
@@ -71,10 +78,12 @@ class CLI():
     def __view_history(self) -> None:
         agent = self.get_agent()
         history = self.history[agent]
-        time_machine_msg = \
-            f'{Color.SYSTEM.value}Viewing chat history with the[/] {self.get_agent().value}\n' \
-            + f'Press {Color.MENU.value}enter[/] to view an earlier ' \
+        time_machine_msg = (
+            f'{Color.SYSTEM.value}Viewing chat history with the[/] '
+            + f'{self.get_agent().value}\n'
+            + f'Press {Color.MENU.value}enter[/] to view an earlier '
             + f'exchange or {Color.MENU.value}q;[/] to exit the time machine'
+        )
         console.print('─' * os.get_terminal_size().columns)
         console.print(time_machine_msg)
 
@@ -104,7 +113,9 @@ class CLI():
 
         if idx < 0:
             console.print(
-                f'{Color.SYSTEM.value}Reached the beginning of time with the {agent.value}')
+                f'{Color.SYSTEM.value}Reached the beginning of time with the '
+                + f'{agent.value}'
+            )
 
         console.print('─' * os.get_terminal_size().columns)
         return CLIResponse.IGNORE
@@ -112,8 +123,10 @@ class CLI():
     def __trigger_reingest(self) -> None:
         #        return CLIResponse.REINGEST
         # TODO: https://github.com/langchain-ai/langchain/issues/14872
-        console.print(f'{Color.SYSTEM.value}At the time, you can manually reingest ' \
-                      + 'by deleting the .sapphire directory in your current path.')
+        console.print(
+            f'{Color.SYSTEM.value}At the time, you can manually reingest '
+            + 'by deleting the .sapphire directory in your current path.'
+        )
         return CLIResponse.IGNORE
 
     def __switch_model(self) -> None:
