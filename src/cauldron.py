@@ -3,9 +3,9 @@ import os
 import shutil
 
 from langchain.document_loaders import DirectoryLoader
-from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores.chroma import Chroma
+from langchain_openai import OpenAIEmbeddings
 
 from cli import Color, console
 

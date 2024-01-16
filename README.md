@@ -52,6 +52,5 @@ The app contains two agents: the Wizard and the Witch. It's mainly for personal 
 4. `cd` into the cloned repo and run `pip install -r requirements.txt`
 
 ## Roadmap
-- [ ] Fix manual data reingestion—see [open issue T_T](https://github.com/langchain-ai/langchain/issues/14872)
 - [ ] Ingest images
 - [ ] Support Latex
