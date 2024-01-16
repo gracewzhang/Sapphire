@@ -1,7 +1,7 @@
 from langchain.chains import ConversationalRetrievalChain
-from langchain.llms import OpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts.prompt import PromptTemplate
+from langchain_openai import OpenAI
 from rich.panel import Panel
 
 from cauldron import Cauldron
@@ -61,4 +61,7 @@ class Witch:
         self.history.append((question, answer))
 
     def reingest(self) -> None:
-        self.cauldron.reingest()
+        if self.cauldron is None:
+            self.__build_qa()
+        else:
+            self.cauldron.reingest()

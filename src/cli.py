@@ -121,13 +121,7 @@ class CLI:
         return CLIResponse.IGNORE
 
     def __trigger_reingest(self) -> None:
-        #        return CLIResponse.REINGEST
-        # TODO: https://github.com/langchain-ai/langchain/issues/14872
-        console.print(
-            f'{Color.SYSTEM.value}At the time, you can manually reingest '
-            + 'by deleting the .sapphire directory in your current path.'
-        )
-        return CLIResponse.IGNORE
+        return CLIResponse.REINGEST
 
     def __switch_model(self) -> None:
         new_model_str = self.get_user_input(Agent.MODEL_SWITCHER)
